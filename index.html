@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Compare default and tuned kana outlines from a local file or an open-source font."
+    />
+    <title>Kana viewer</title>
+  </head>
+  <body>
+    <main>
+      <h1>Kana viewer</h1>
+      <form>
+        <div class="control-row">
+          <label for="google-font">
+            Google Fonts
+            <select id="google-font">
+              <option value="">Choose a family</option>
+            </select>
+          </label>
+          <label for="font"
+            >Local font
+            <input id="font" type="file" accept=".otf,.ttf,.woff2" />
+          </label>
+        </div>
+        <div class="control-row">
+          <label for="kana"
+            >Kana
+            <input
+              id="kana"
+              lang="ja"
+              type="text"
+              value="し"
+              autocomplete="off"
+              spellcheck="false"
+            />
+          </label>
+          <button id="random-small-kana" type="button">
+            Random (small kanas)
+          </button>
+          <button id="random-non-small-kana" type="button">
+            Random (non-small kanas)
+          </button>
+          <button id="download" type="button" disabled>Save SVG</button>
+        </div>
+      </form>
+      <div class="figure-options">
+        <label class="comparison-option" for="comparison">
+          Compare
+          <select id="comparison">
+            <option value="kana">hkna / vkna</option>
+            <option value="ruby">ruby / ruby.vert</option>
+          </select>
+        </label>
+        <label
+          ><input id="panel-labels" type="checkbox" checked /> Panel
+          labels</label
+        >
+        <fieldset>
+          <legend>Outline</legend>
+          <label><input id="outline-default" type="checkbox" /> Default</label>
+          <label><input id="outline-vert" type="checkbox" /> vert</label>
+          <label>
+            <input id="outline-horizontal" type="checkbox" />
+            <span id="outline-horizontal-label">hkna</span>
+          </label>
+          <label>
+            <input id="outline-vertical" type="checkbox" />
+            <span id="outline-vertical-label">vkna</span>
+          </label>
+        </fieldset>
+      </div>
+      <p id="status" role="status" aria-live="polite">
+        Choose a Google Fonts family or open an OTF, TTF, or WOFF2 file.
+      </p>
+      <div id="figure"></div>
+      <dl id="glyph-details"></dl>
+      <section class="kana-notes" aria-labelledby="kana-notes-heading">
+        <h2 id="kana-notes-heading">Adobe-Japan1 fonts</h2>
+        <ul>
+          <li>
+            In Adobe-Japan1 fonts, <code>vert</code> shares the default
+            full-width glyph for ordinary kana. Small kana and the
+            Katakana-Hiragana Prolonged Sound Mark <span lang="ja">ー</span> are
+            common exceptions.
+          </li>
+          <li>
+            <code>ruby</code> selects glyphs designed for annotations. In
+            Adobe-Japan1 fonts, <code>ruby.vert</code> shares the horizontal
+            ruby glyph for ordinary kana. Small kana and the Katakana-Hiragana
+            Prolonged Sound Mark <span lang="ja">ー</span> can have separate
+            vertical ruby glyphs.
+          </li>
+          <li>
+            Ruby annotations can use scaled standard kana in Adobe-Japan1-3
+            fonts. Dedicated <code>ruby</code> glyphs and the direction-tuned
+            <code>hkna</code> and <code>vkna</code> sets were introduced in
+            Adobe-Japan1-4.
+          </li>
+          <li>
+            Many Adobe-Japan1 fonts reuse the standard kana outlines for
+            <code>hkna</code> and <code>vkna</code> or omit these features.
+            Notable exceptions include Hiragino Mincho Pro and ProN, Kozuka
+            Gothic Pr6N, and Kozuka Mincho Pr6N.
+          </li>
+          <li>
+            Adobe-Japan1-5 defines two additional sets of kana glyphs:
+            proportional kana for horizontal (<code>pkna</code>) and vertical
+            (<code>pkna.vert</code>) text, each with its own CIDs.
+          </li>
+        </ul>
+        <p>
+          <a
+            href="https://github.com/adobe-type-tools/Adobe-Japan1/blob/master/README.md#kana-glyphs"
+            >Adobe-Japan1 kana glyph table</a
+          >
+        </p>
+      </section>
+      <section class="kana-notes" aria-labelledby="source-han-heading">
+        <h2 id="source-han-heading">Source Han series</h2>
+        <p>
+          The pan-CJK Source Han Sans and Source Han Serif have their own
+          Adobe-Identity-0 glyph ordering, independent of the Adobe-Japan1
+          collection. Both have default horizontal kana and separate, slightly
+          smaller forms for vertical writing. The <code>vert</code> feature
+          selects the vertical forms for both ordinary and small kana. Neither
+          family includes <code>hkna</code> or <code>vkna</code>.
+        </p>
+        <p>
+          Neither family has dedicated ruby kana glyphs. Their <code>ruby</code>
+          feature substitutes only Bopomofo tone marks.
+          <a
+            href="https://github.com/adobe-fonts/source-han-sans/blob/master/Masters/Light/features.JP#L1414-L1416"
+            >Source Han Sans feature source</a
+          >
+          and
+          <a
+            href="https://github.com/adobe-fonts/source-han-serif/blob/master/Masters/Regular/features.JP#L1436-L1438"
+            >Source Han Serif feature source</a
+          >.
+        </p>
+        <h3>Source Han Serif — why it switches glyphs</h3>
+        <blockquote lang="ja">
+          <p>
+            縦書きへの対応については、「フォントデザイン自体が、横より縦組の方が大きく見える」ことから、「縦書き用のグリフを別に持ち、自動的に切り替わるようにしている」とのこと。
+          </p>
+        </blockquote>
+        <p>
+          Nishizuka says the design looks larger in vertical setting, so the
+          font carries separate vertical glyphs and switches to them
+          automatically.
+          <a
+            href="https://internet.watch.impress.co.jp/docs/news/1055316.html#:~:text=%E3%83%95%E3%82%A9%E3%83%B3%E3%83%88%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E8%87%AA%E4%BD%93%E3%81%8C%E3%80%81%E6%A8%AA%E3%82%88%E3%82%8A%E7%B8%A6%E7%B5%84%E3%81%AE%E6%96%B9%E3%81%8C%E5%A4%A7%E3%81%8D%E3%81%8F%E8%A6%8B%E3%81%88%E3%82%8B"
+            >Jump to the launch report passage</a
+          >.
+        </p>
+        <blockquote lang="ja">
+          <p>
+            源ノ明朝はかなを大きめに作っていますが、縦組みの場合は自動的に2パーセント小さくなります。
+          </p>
+        </blockquote>
+        <p>
+          “The kana in Source Han Serif are designed on the large side, but in
+          vertical setting they automatically become 2% smaller.”
+          <a
+            href="https://www.too.com/event/report/y2017/fonttalk2017.html#:~:text=%E6%BA%90%E3%83%8E%E6%98%8E%E6%9C%9D%E3%81%AF%E3%81%8B%E3%81%AA%E3%82%92%E5%A4%A7%E3%81%8D%E3%82%81%E3%81%AB%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%84%E3%81%BE%E3%81%99%E3%81%8C"
+            >Jump to the FONT TALK II passage and slide</a
+          >.
+        </p>
+        <h3>Source Han Sans — what Nishizuka said</h3>
+        <blockquote>
+          <p>
+            … we were looking at how to reduce discomfort while reading long
+            texts or in vertical writing, such as ebooks.
+          </p>
+        </blockquote>
+        <p>
+          That’s the design goal she gives for Sans. The interview leaves the
+          size adjustment and the reason for covering every kana unspecified.
+          <a
+            href="https://blog.typekit.com/2014/08/14/interview-with-ryoko-nishizuka/#:~:text=we%20were%20looking%20at%20how%20to%20reduce%20discomfort"
+            >Jump to Nishizuka’s answer</a
+          >.
+        </p>
+      </section>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
