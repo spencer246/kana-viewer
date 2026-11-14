@@ -206,7 +206,9 @@ function selectGoogleFont() {
     loaded = undefined;
     loading = false;
     render();
-    message("Choose a Google Fonts family or open an OTF, TTF, or WOFF2 file.");
+    message(
+      "Choose a Google Fonts family or open an OTF, TTF, WOFF, or WOFF2 file.",
+    );
     return;
   }
   input.value = "";

@@ -7,6 +7,7 @@ import {
   Font,
   shape,
 } from "harfbuzzjs";
+import { decompressWoff } from "./woff";
 import { decompressWoff2 } from "./woff2";
 
 export interface LoadedFont {
@@ -20,17 +21,16 @@ export async function loadFont(file: File): Promise<LoadedFont> {
   let data = await file.arrayBuffer();
   if (data.byteLength < 12)
     throw new Error("This file is too short to be a font.");
-  let signature = new DataView(data).getUint32(0);
-  if (signature === 0x774f4632) {
-    data = await decompressWoff2(data);
-    signature = new DataView(data).getUint32(0);
-  }
+  const container = new DataView(data).getUint32(0);
+  if (container === 0x774f4646) data = await decompressWoff(data);
+  if (container === 0x774f4632) data = await decompressWoff2(data);
+  const signature = new DataView(data).getUint32(0);
   if (
     signature !== 0x4f54544f &&
     signature !== 0x00010000 &&
     signature !== 0x74727565
   ) {
-    throw new Error("Choose a single-face OTF, TTF, or WOFF2 font.");
+    throw new Error("Choose a single-face OTF, TTF, WOFF, or WOFF2 font.");
   }
 
   const face = new Face(new Blob(data));
